@@ -209,6 +209,9 @@ sudo apt-get install -y $(cat compile-kernel/tools/script/ubuntu2404-build-armbi
 - `sudo ./rebuild -k 6.6.12_5.15.50 -a true`: Use the default configuration, specify multiple kernels, and package all models of TV boxes, the kernel package uses `_` for connection. Automatically upgrade to the latest kernel of the same series.
 - `sudo ./rebuild -t btrfs -s 2560 -k 6.6.12`: Use the default configuration, set the file system to btrfs format, the partition size is 2560MiB, and specify the kernel as 6.6.12, package for all models of TV boxes.
 
+> [!TIP]
+> When using the btrfs filesystem, you can modify the `btrfs_compress` variable in the `rebuild` script to adjust the compression level (default is `zstd:6`). For detailed instructions, please refer to the [Btrfs Compression Configuration Documentation](documents/btrfs_compression_en.md).
+
 ## Use GitHub Actions for Compilation
 
 1. The configuration of the Workflows file can be found in the [.github/workflows/](.github/workflows/) files.
