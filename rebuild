@@ -109,6 +109,10 @@ boot_mb="512"
 root_mb="3000"
 # Set ROOTFS partition file system type, options: [ ext4 / btrfs ]
 rootfs_type="ext4"
+# Set btrfs compression level (Only effective when rootfs_type is btrfs)
+# Compression algorithm: zstd, Compression level: 1-15 (default is 6)
+# Higher values provide better compression but use more CPU
+btrfs_compress="zstd:6"
 # Set Armbian OS type (server / desktop)
 os_type="server"
 # Set Armbian builder signature
@@ -147,7 +151,7 @@ mount_try() {
     while [[ "${t}" -le "${max_try}" ]]; do
         # Mount according to the image partition format
         if [[ "${m_type}" == "btrfs" ]]; then
-            mount -t ${m_type} -o discard,compress=zstd:6 ${m_dev} ${m_target} 2>/dev/null
+            mount -t ${m_type} -o discard,compress=${btrfs_compress} ${m_dev} ${m_target} 2>/dev/null
         else
             mount -t ${m_type} -o discard ${m_dev} ${m_target} 2>/dev/null
         fi
@@ -895,10 +899,10 @@ refactor_bootfs() {
     # Set configuration file mount parameters
     if [[ "${rootfs_type}" == "btrfs" ]]; then
         # For uEnv.txt
-        uenv_rootdev="UUID=${ROOTFS_UUID} rootflags=compress=zstd:6 rw rootwait rootfstype=btrfs"
+        uenv_rootdev="UUID=${ROOTFS_UUID} rootflags=compress=${btrfs_compress} rw rootwait rootfstype=btrfs"
         # For armbianEnv.txt
         armbianenv_rootdev="UUID=${ROOTFS_UUID}"
-        armbianenv_rootflags="compress=zstd:6"
+        armbianenv_rootflags="compress=${btrfs_compress}"
     else
         # For uEnv.txt
         uenv_rootdev="UUID=${ROOTFS_UUID} rootflags=data=writeback rw rootwait rootfstype=ext4"
@@ -1005,7 +1009,7 @@ refactor_rootfs() {
     [[ -f "etc/fstab" ]] || error_msg "The etc/fstab File does not exist."
     # Set different types of mount parameters
     if [[ "${rootfs_type}" == "btrfs" ]]; then
-        fstab_string="defaults,noatime,compress=zstd:6"
+        fstab_string="defaults,noatime,compress=${btrfs_compress}"
     else
         fstab_string="defaults,noatime,nodiratime,commit=600,errors=remount-ro"
     fi
