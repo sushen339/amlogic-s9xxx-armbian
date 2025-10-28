@@ -209,6 +209,9 @@ sudo apt-get install -y $(cat compile-kernel/tools/script/ubuntu2404-build-armbi
 - `sudo ./rebuild -k 6.6.12_5.15.50 -a true` : 使用默认配置，指定多个内核，进行全部型号电视盒子进行打包, 内核包使用 `_` 进行连接。自动升级到同系列最新内核。
 - `sudo ./rebuild -t btrfs -s 2560 -k 6.6.12` : 使用默认配置，设置文件系统为 btrfs 格式，分区大小为 2560MiB, 并指定内核为 6.6.12 ，对全部型号电视盒子进行打包。
 
+> [!TIP]
+> 当使用 btrfs 文件系统时，可以修改 `rebuild` 脚本中的 `btrfs_compress` 变量来调整压缩级别（默认为 `zstd:6`）。详细说明请参阅 [Btrfs 压缩配置文档](documents/btrfs_compression_cn.md)。
+
 ## 使用 GitHub Actions 进行编译
 
 1. 关于 Workflows 文件的配置在 [.github/workflows/](.github/workflows/) 文件里。
